@@ -5,5 +5,8 @@ import { ClickCounterService } from '../services/click-counter/click-counter.ser
   selector: 'app-click-count',
   templateUrl: './click-count.component.html',
   styleUrl: './click-count.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClickCountComponent {}
+export class ClickCountComponent {
+  protected readonly clickService = inject(ClickCounterService);
+}

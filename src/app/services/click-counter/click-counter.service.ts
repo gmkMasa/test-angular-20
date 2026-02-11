@@ -1,12 +1,28 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ClickCounterService {
-  count = 0;
+  private readonly _count = signal(parseInt(localStorage.getItem('count') ?? '0'));
 
-  increment() {}
+  public readonly count = this._count.asReadonly();
 
-  reset() {}
+  increment(): void {
+    this._count.update((current) => current + 1);
+  }
 
-  constructor() {}
+  reset(): void {
+    this._count.set(0);
+  }
+
+  constructor() {
+    effect(() => {
+      const currentCount = this._count();
+      const currentSavedCount = parseInt(localStorage.getItem('count') ?? '0');
+
+      if (currentCount !== currentSavedCount) {
+        console.log('saving to localStorage');
+        localStorage.setItem('count', currentCount.toString());
+      }
+    });
+  }
 }
